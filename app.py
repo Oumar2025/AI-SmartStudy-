@@ -1,30 +1,25 @@
 import streamlit as st
+from utils.ui import (
+    setup_page,
+    show_header,
+    show_sidebar,
+    show_document_info
+)
 from utils.vector_store import create_vector_store, search_document
-from utils.chatbot import summarize_text, answer_question
+from utils.chatbot import (
+    summarize_text,
+    answer_question,
+    generate_quiz
+)
 
 from utils.pdf_reader import extract_text_from_pdf
 from utils.embeddings import split_text
 from utils.vector_store import create_vector_store
 from utils.chatbot import summarize_text
 
-# -----------------------------
-# PAGE SETTINGS
-# -----------------------------
-st.set_page_config(
-    page_title="SmartStudy AI",
-    page_icon="📚",
-    layout="wide"
-)
-
-# -----------------------------
-# TITLE
-# -----------------------------
-st.title("📚 SmartStudy AI")
-st.subheader("Intelligent Learning Assistant")
-
-st.write(
-    "Upload your lecture PDF and let AI help you study smarter."
-)
+setup_page()
+show_sidebar()
+show_header()
 
 # -----------------------------
 # PDF UPLOAD
@@ -51,14 +46,25 @@ if uploaded_file is not None:
         height=350
     )
 
-    st.info(f"Characters extracted: {len(text)}")
+   
     chunks = split_text(text)
 
-    st.success(f"Document split into {len(chunks)} chunks.")
+   
     vector_store = create_vector_store(chunks)
+    show_document_info(
+        len(text),
+        len(chunks)
+    )
+    tab1, tab2, tab3 = st.tabs(
+    [
+        "📄 Summary",
+        "💬 Ask Questions",
+        "📝 Quiz Generator"
+    ]
+)
 
-    st.success("Knowledge base created successfully!")
-    st.info(f"Knowledge base contains {len(chunks)} document chunks.")
+    
+    
 
     with st.expander("View Chunks"):
 
@@ -68,34 +74,54 @@ if uploaded_file is not None:
     st.divider()
     st.divider()
 
-    st.subheader("Ask Questions")
+    with tab2:
 
-    question = st.text_input(
-        "Ask anything about the uploaded PDF"
-    )
+        st.subheader("Ask Questions")
 
-    if st.button("Get Answer"):
-
-        context = search_document(
-            vector_store,
-            question
+        question = st.text_input(
+            "Ask anything about the uploaded PDF"
         )
 
-        answer = answer_question(
-            question,
-            context
+        if st.button("Get Answer"):
+
+            context = search_document(
+                vector_store,
+                question
+            )
+
+            answer = answer_question(
+                question,
+                context
+            )
+
+            st.subheader("Answer")
+
+            st.write(answer)
+
+    with tab3:
+
+        st.subheader("📝 Quiz Generator")
+
+        st.write(
+            "Generate multiple-choice questions from the uploaded lecture."
         )
 
-        st.subheader("Answer")
+        if st.button("Generate Quiz"):
 
-        st.write(answer)
+            with st.spinner("Generating quiz..."):
 
-    if st.button("Generate AI Summary"):
+                quiz = generate_quiz(text)
 
-        with st.spinner("AI is reading your lecture..."):
+            st.markdown(quiz)     
 
-            summary = summarize_text(text)
+    with tab1:
 
-        st.subheader("AI Summary")
+        if st.button("Generate AI Summary"):
 
-        st.write(summary)
+            with st.spinner("AI is reading your lecture..."):
+
+                summary = summarize_text(text)
+
+            st.subheader("AI Summary")
+
+            st.write(summary)

@@ -42,3 +42,25 @@ Answer:
 """
 
     return llm.invoke(prompt)
+
+def generate_quiz(text):
+
+    prompt = f"""
+You are SmartStudy AI.
+
+Create a study quiz from the lecture notes below.
+
+Rules:
+
+- Create exactly 5 multiple-choice questions.
+- Each question must have 4 options (A, B, C, D).
+- Clearly indicate the correct answer.
+- Add a one-sentence explanation after each answer.
+- Format the quiz neatly using Markdown.
+
+Lecture Notes:
+
+{text[:6000]}
+"""
+
+    return llm.invoke(prompt)
