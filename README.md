@@ -28,7 +28,7 @@ The application combines Natural Language Processing (NLP), Retrieval-Augmented 
 # Demo (https://drive.google.com/file/d/1qXpDQfs9HAnRPGqySHp8lWwo_6sPBGdB/view?usp=sharing)
 
 # Poster:
-   ![Question Answering](screenshots/poster.png) 
+   ![Question Answering](screenshots/Poster.png) 
 
 # Problem Statement
 
