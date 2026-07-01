@@ -11,6 +11,9 @@ from utils.chatbot import (
     answer_question,
     generate_quiz
 )
+from components.summary_tab import show_summary_tab
+from components.question_tab import show_question_tab
+from components.quiz_tab import show_quiz_tab
 
 from utils.pdf_reader import extract_text_from_pdf
 from utils.embeddings import split_text
@@ -75,53 +78,23 @@ if uploaded_file is not None:
     st.divider()
 
     with tab2:
-
-        st.subheader("Ask Questions")
-
-        question = st.text_input(
-            "Ask anything about the uploaded PDF"
+        show_question_tab(
+            vector_store,
+            search_document,
+            answer_question
         )
 
-        if st.button("Get Answer"):
-
-            context = search_document(
-                vector_store,
-                question
-            )
-
-            answer = answer_question(
-                question,
-                context
-            )
-
-            st.subheader("Answer")
-
-            st.write(answer)
 
     with tab3:
 
-        st.subheader("📝 Quiz Generator")
-
-        st.write(
-            "Generate multiple-choice questions from the uploaded lecture."
-        )
-
-        if st.button("Generate Quiz"):
-
-            with st.spinner("Generating quiz..."):
-
-                quiz = generate_quiz(text)
-
-            st.markdown(quiz)     
+        show_quiz_tab(
+            text,
+            generate_quiz
+        )     
 
     with tab1:
 
-        if st.button("Generate AI Summary"):
-
-            with st.spinner("AI is reading your lecture..."):
-
-                summary = summarize_text(text)
-
-            st.subheader("AI Summary")
-
-            st.write(summary)
+        show_summary_tab(
+            text,
+            summarize_text
+        )

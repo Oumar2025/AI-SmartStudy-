@@ -1,4 +1,6 @@
 from langchain_ollama import OllamaLLM
+import ast
+import re
 
 llm = OllamaLLM(
     model="llama3.2:3b"
@@ -43,24 +45,60 @@ Answer:
 
     return llm.invoke(prompt)
 
+
+
+
 def generate_quiz(text):
 
     prompt = f"""
 You are SmartStudy AI.
 
-Create a study quiz from the lecture notes below.
+Generate exactly 5 multiple-choice questions.
 
-Rules:
+Return ONLY JSON.
 
-- Create exactly 5 multiple-choice questions.
-- Each question must have 4 options (A, B, C, D).
-- Clearly indicate the correct answer.
-- Add a one-sentence explanation after each answer.
-- Format the quiz neatly using Markdown.
+Example:
 
-Lecture Notes:
+[
+ {{
+   "question":"...",
+   "options": {{
+      "A":"...",
+      "B":"...",
+      "C":"...",
+      "D":"..."
+   }},
+   "answer":"A",
+   "explanation":"..."
+ }}
+]
+
+Lecture:
 
 {text[:6000]}
 """
 
-    return llm.invoke(prompt)
+    response = llm.invoke(prompt)
+
+    print("\n========== AI RESPONSE ==========\n")
+    print(response)
+    print("\n===============================\n")
+
+    # Remove markdown if present
+    response = response.replace("```json", "")
+    response = response.replace("```", "")
+
+    # Extract JSON array
+    match = re.search(r"\[.*\]", response, re.DOTALL)
+
+    if match:
+
+        json_text = match.group(0)
+
+        try:
+            return ast.literal_eval(json_text)
+
+        except Exception as e:
+
+            print("Quiz parsing error:", e)
+            return []
