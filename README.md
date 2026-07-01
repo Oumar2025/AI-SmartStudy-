@@ -25,6 +25,11 @@ The application combines Natural Language Processing (NLP), Retrieval-Augmented 
 
 ---
 
+# Demo (https://drive.google.com/file/d/1qXpDQfs9HAnRPGqySHp8lWwo_6sPBGdB/view?usp=sharing)
+
+# Poster:
+   ![Question Answering](screenshots/poster.png) 
+
 # Problem Statement
 
 Students often struggle to:
@@ -312,32 +317,7 @@ FAISS Vector Store
 
 # Example Workflow
 
-1. Upload lecture PDF
-
-↓
-
-2. Extract document text
-
-↓
-
-3. Build Knowledge Base
-
-↓
-
-4. Ask AI questions
-
-↓
-
-5. Generate summary
-
-↓
-
-6. Generate quiz
-
-↓
-
-7. Practice and receive score
-
+![Question Answering](screenshots/AI.png)
 ---
 
 # Future Improvements
